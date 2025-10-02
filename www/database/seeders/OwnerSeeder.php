@@ -14,25 +14,18 @@ class OwnerSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('owners')->insert([
-            [
-                'name' => 'test1',
-                'email' => 'test1@test.com',
+        $owners = [];
+
+        for ($i = 1; $i <= 100; $i++) {
+            $owners[] = [
+                'name' => 'test' . $i,
+                'email' => 'test' . $i . '@test.com',
                 'password' => Hash::make('password123'),
                 'created_at' => now(),
-            ],
-            [
-                'name' => 'test2',
-                'email' => 'test2@test.com',
-                'password' => Hash::make('password123'),
-                'created_at' => now(),
-            ],
-            [
-                'name' => 'test3',
-                'email' => 'test3@test.com',
-                'password' => Hash::make('password123'),
-                'created_at' => now(),
-            ]
-        ]);
+                'updated_at' => now(),
+            ];
+        }
+
+        DB::table('owners')->insert($owners);
     }
 }
