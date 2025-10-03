@@ -64,4 +64,9 @@ class Owner extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function shop(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Shop::class);
+    }
 }
