@@ -16,10 +16,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\Shop|null $shop
  * @method static \Illuminate\Database\Eloquent\Builder|Owner newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Owner newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Owner onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Owner query()
  * @method static \Illuminate\Database\Eloquent\Builder|Owner whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Owner whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Owner whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Owner whereEmailVerifiedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Owner whereId($value)
@@ -27,6 +31,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @method static \Illuminate\Database\Eloquent\Builder|Owner wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Owner whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Owner whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Owner withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Owner withoutTrashed()
  * @mixin \Eloquent
  */
 class Owner extends Authenticatable
