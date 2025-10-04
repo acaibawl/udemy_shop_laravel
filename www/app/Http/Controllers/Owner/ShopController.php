@@ -7,6 +7,7 @@ use App\Models\Shop;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
 
 class ShopController extends Controller
 {
@@ -40,11 +41,17 @@ class ShopController extends Controller
         return view('owner.shops.edit', compact('shop'));
     }
 
-    public function update(Request $request, int $id)
+    public function update(Request $request, int $id, ImageManager $imageManager)
     {
         $imageFile = $request->file('image');
         if (!is_null($imageFile) && $imageFile->isValid()) {
-            Storage::putFile('public/shops', $imageFile);
+            // Storage::putFile('public/shops', $imageFile); // リサイズなし
+            $fileName = uniqid(rand() . '_');
+            $extension = $imageFile->extension();
+            $fileNameToStore = $fileName . '.' . $extension;
+            $resizedImage = $imageManager->read($imageFile->getRealPath())->resize(1920, 1080)->encode();
+
+            Storage::put('public/shops/' . $fileNameToStore, $resizedImage);
         }
 
         return redirect()->route('owner.shops.index');

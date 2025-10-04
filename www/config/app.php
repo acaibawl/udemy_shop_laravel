@@ -1,5 +1,6 @@
 <?php
 
+use App\Providers\ImageServiceProvider;
 use App\Providers\SampleServiceProvider;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
@@ -171,6 +172,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         SampleServiceProvider::class,
+        ImageServiceProvider::class,
     ])->toArray(),
 
     /*
