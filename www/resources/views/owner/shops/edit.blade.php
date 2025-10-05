@@ -24,7 +24,7 @@
                                     <x-input-error :messages="$errors->get('name')" class="mt-2" />
                                 </div>
                                 <div class="w-32">
-                                    <x-shop-thumbnail :shop="$shop" />
+                                    <x-thumbnail :filename="$shop->filename" type="shops" />
                                 </div>
                                 <div class="relative">
                                     <label for="image" class="leading-7 text-sm text-gray-600">画像</label>

@@ -17,6 +17,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Image> $images
+ * @property-read int|null $images_count
  * @property-read \App\Models\Shop|null $shop
  * @method static \Illuminate\Database\Eloquent\Builder|Owner newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Owner newQuery()
@@ -74,5 +76,10 @@ class Owner extends Authenticatable
     public function shop(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Shop::class);
+    }
+
+    public function images(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Image::class);
     }
 }
