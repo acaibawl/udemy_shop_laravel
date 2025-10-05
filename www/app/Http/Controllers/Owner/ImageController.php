@@ -70,19 +70,12 @@ class ImageController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
     {
-        //
+        $image = Image::findOrFail($id);
+        return view('owner.images.edit', compact('image'));
     }
 
     /**
@@ -90,7 +83,16 @@ class ImageController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'title' => ['string', 'max:50'],
+        ]);
+        $image = Image::findOrFail($id);
+        $image->update(['title' => $request->input('title')]);
+
+        return redirect()->route('owner.images.index')->with([
+            'message' => '画像情報を更新しました。',
+            'status' => 'info',
+        ]);
     }
 
     /**

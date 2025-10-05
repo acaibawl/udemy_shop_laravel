@@ -31,6 +31,7 @@ class Image extends Model
     protected $fillable = [
         'owner_id',
         'filename',
+        'title',
     ];
 
     public function owner(): \Illuminate\Database\Eloquent\Relations\BelongsTo
