@@ -23,4 +23,9 @@ class Product extends Model
     {
         return $this->belongsTo(Image::class, 'image1', 'id');
     }
+
+    public function stocks(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Stock::class);
+    }
 }
