@@ -16,7 +16,7 @@ class OwnerSeeder extends Seeder
     {
         $owners = [];
 
-        for ($i = 1; $i <= 100; $i++) {
+        for ($i = 1; $i <= 10; $i++) {
             $owners[] = [
                 'name' => 'test' . $i,
                 'email' => 'test' . $i . '@test.com',
