@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UploadImageRequest;
 use App\Models\Image;
 use App\Models\Owner;
+use App\Models\Product;
 use App\Models\Shop;
 use App\Services\ImageService;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -102,13 +104,43 @@ class ImageController extends Controller
      */
     public function destroy(string $id)
     {
-        $image = Image::findOrFail($id);
-        $filePath = 'public/products/' . $image->filename;
-        if (Storage::exists($filePath)) {
-            Storage::delete($filePath);
-        }
+        try {
+            DB::transaction(function () use ($id) {
+                $image = Image::findOrFail($id);
 
-        $image->delete();
+                $products = Product::where('image1', $image->id)
+                    ->orWhere('image2', $image->id)
+                    ->orWhere('image3', $image->id)
+                    ->orWhere('image4', $image->id)
+                    ->get();
+
+                $products->each(function (Product $product) use ($image) {
+                    if ($product->image1 === $image->id) {
+                        $product->image1 = null;
+                    }
+                    if ($product->image2 === $image->id) {
+                        $product->image2 = null;
+                    }
+                    if ($product->image3 === $image->id) {
+                        $product->image3 = null;
+                    }
+                    if ($product->image4 === $image->id) {
+                        $product->image4 = null;
+                    }
+                    $product->save();
+                });
+
+                $filePath = 'public/products/' . $image->filename;
+                if (Storage::exists($filePath)) {
+                    Storage::delete($filePath);
+                }
+
+                $image->delete();
+            });
+        } catch (\Throwable $e) {
+            \Log::error($e);
+            throw $e;
+        }
 
         return redirect()
             ->route('owner.images.index')
