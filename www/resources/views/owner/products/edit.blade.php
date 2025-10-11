@@ -11,6 +11,8 @@
                 <div class="p-6 text-gray-900">
                     <form method="POST" action="{{ route('owner.products.update', ['product' => $product->id]) }}">
                         @csrf
+                        @method('PUT')
+                        <x-flash-message :status="session('status')"/>
                         <div class="-m-2">
                             <div class="p-2 w-1/2 mx-auto">
                                 <div class="relative">
@@ -36,7 +38,7 @@
                                 <div class="relative">
                                     <label for="current_quantity" class="leading-7 text-sm text-gray-600">現在の在庫 ※必須</label>
                                     <input type="hidden" id="current_quantity" name="current_quantity" value="{{ $quantity }}" required class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-                                    <x-input-error :messages="$errors->get('quantity')" class="mt-2" />
+                                    <x-input-error :messages="$errors->get('current_quantity')" class="mt-2" />
                                     <div class="w-full bg-gray-100 bg-opacity-50 rounded border-gray-300 text-base text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">{{ $quantity }}</div>
                                 </div>
                                 <div class="relative flex justify-around">

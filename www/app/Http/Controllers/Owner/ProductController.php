@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProductRequest;
 use App\Models\Image;
 use App\Models\Owner;
 use App\Models\PrimaryCategory;
@@ -62,23 +63,8 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:50',
-            'information' => 'required|string|max:1000',
-            'price' => 'required|integer|min:0|max:1000000',
-            'sort_order' => 'nullable|integer',
-            'quantity' => 'required|integer',
-            'shop_id' => 'required|exists:shops,id',
-            'category' => 'required|exists:secondary_categories,id',
-            'image1' => 'nullable|exists:images,id',
-            'image2' => 'nullable|exists:images,id',
-            'image3' => 'nullable|exists:images,id',
-            'image4' => 'nullable|exists:images,id',
-            'is_selling' => 'required|boolean',
-        ]);
-
         try {
             DB::transaction(function () use ($request) {
                 $product = Product::create([
@@ -141,10 +127,61 @@ class ProductController extends Controller
 
     /**
      * Update the specified resource in storage.
+     * @throws Throwable
      */
-    public function update(Request $request, string $id)
+    public function update(ProductRequest $request, string $id)
     {
-        //
+        $request->validate([
+            'current_quantity' => 'required|integer',
+        ]);
+
+        $product = Product::findOrFail($id);
+        $quantity = Stock::where('product_id', $id)->sum('quantity');
+        if ($request->current_quantity !== $quantity) {
+            // 同時更新エラー
+            return redirect()->route('owner.products.edit', ['product' => $id])
+                ->with([
+                    'message' => '在庫数が変更されています。再度確認してください。',
+                    'status' => 'alert',
+                ]);
+        }
+
+        try {
+            DB::transaction(function () use ($request, $product) {
+                $product->update([
+                    'name' => $request->name,
+                    'information' => $request->information,
+                    'price' => $request->price,
+                    'sort_order' => $request->sort_order,
+                    'shop_id' => $request->shop_id,
+                    'secondary_category_id' => $request->category,
+                    'image1' => $request->image1,
+                    'image2' => $request->image2,
+                    'image3' => $request->image3,
+                    'image4' => $request->image4,
+                    'is_selling' => $request->is_selling,
+                ]);
+
+                if ($request->type === '1') {
+                    $newQuantity = $request->quantity;
+                }
+                if ($request->type === '2') {
+                    $newQuantity = $request->quantity * -1;
+                }
+                Stock::create([
+                    'product_id' => $product->id,
+                    'type' => $request->type,
+                    'quantity' => $newQuantity,
+                ]);
+            });
+        } catch (Throwable $e) {
+            Log::error($e);
+            throw $e;
+        }
+
+        return redirect()
+            ->route('owner.products.index')
+            ->with(['message' => '商品情報を更新しました。', 'status' => 'info']);
     }
 
     /**
