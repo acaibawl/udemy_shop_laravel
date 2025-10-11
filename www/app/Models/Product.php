@@ -51,6 +51,7 @@ class Product extends Model
     protected $fillable = [
         'shop_id',
         'secondary_category_id',
+        'sort_order',
         'name',
         'information',
         'price',
@@ -74,6 +75,21 @@ class Product extends Model
     public function imageFirst(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Image::class, 'image1', 'id');
+    }
+
+    public function imageSecond(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Image::class, 'image2', 'id');
+    }
+
+    public function imageThird(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Image::class, 'image3', 'id');
+    }
+
+    public function imageFourth(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Image::class, 'image4', 'id');
     }
 
     public function stocks(): \Illuminate\Database\Eloquent\Relations\HasMany
