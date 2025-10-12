@@ -16,6 +16,7 @@
         "vite": "^5.0.0"
     },
     "dependencies": {
-        "micromodal": "^0.6.1"
+        "micromodal": "^0.6.1",
+        "swiper": "^12.0.2"
     }
 }
