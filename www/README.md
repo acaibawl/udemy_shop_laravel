@@ -24,3 +24,14 @@ chmod -R 775 storage
 chmod -R 775 bootstrap/cache
 cp public/images/sample*.jpg storage/app/public/products/
 ```
+
+
+ショップの画像も表示する場合は
+storage/app/public/shopsフォルダを作成し、
+画像を保存してください。
+
+```shell
+mkdir -p storage/app/public/shops
+cp public/images/sample1.jpg storage/app/public/shops/
+cp public/images/sample2.jpg storage/app/public/shops/
+```
