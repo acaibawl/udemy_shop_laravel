@@ -96,4 +96,10 @@ class Product extends Model
     {
         return $this->hasMany(Stock::class);
     }
+
+    public function users(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'carts')
+            ->withPivot(['id', 'quantity']);
+    }
 }
