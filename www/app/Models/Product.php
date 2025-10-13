@@ -22,9 +22,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\SecondaryCategory $category
  * @property-read \App\Models\Image|null $imageFirst
+ * @property-read \App\Models\Image|null $imageFourth
+ * @property-read \App\Models\Image|null $imageSecond
+ * @property-read \App\Models\Image|null $imageThird
  * @property-read \App\Models\Shop $shop
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Stock> $stocks
  * @property-read int|null $stocks_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
+ * @property-read int|null $users_count
+ * @method static \Database\Factories\ProductFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Product newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Product newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Product query()
