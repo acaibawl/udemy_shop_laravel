@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
+use App\Models\Stock;
 use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
@@ -61,15 +62,31 @@ class CartController extends Controller
 
         $lineItems = [];
         foreach ($products as $product) {
-            $lineItem = [
-                'name' => $product->name,
-                'description' => $product->information,
-                'amount' => $product->price,
-                'currency' => 'jpy',
-                'quantity' => $product->pivot->quantity,
-            ];
-            $lineItems[] = $lineItem;
+            $quantity = Stock::where('product_id', $product->id)->sum('quantity');
+            if ($product->pivot->quantity > $quantity) {
+                return redirect()->route('user.cart.index')
+                    ->with('message', '在庫が足りません。購入数を変更してください。');
+            } else {
+                $lineItem = [
+                    'name' => $product->name,
+                    'description' => $product->information,
+                    'amount' => $product->price,
+                    'currency' => 'jpy',
+                    'quantity' => $product->pivot->quantity,
+                ];
+                $lineItems[] = $lineItem;
+            }
         }
+
+        foreach ($products as $product) {
+            Stock::create([
+                'product_id' => $product->id,
+                'type' => \Constant::PRODUCT_LIST['reduce'],
+                'quantity' => $product->pivot->quantity * -1,
+            ]);
+        }
+
+        dd('test');
 
         Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
         $session = Session::create([
