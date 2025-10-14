@@ -67,11 +67,22 @@ class CartController extends Controller
                 return redirect()->route('user.cart.index')
                     ->with('message', '在庫が足りません。購入数を変更してください。');
             } else {
+//                $lineItem = [
+//                    'name' => $product->name,
+//                    'description' => $product->information,
+//                    'amount' => $product->price,
+//                    'currency' => 'jpy',
+//                    'quantity' => $product->pivot->quantity,
+//                ];
                 $lineItem = [
-                    'name' => $product->name,
-                    'description' => $product->information,
-                    'amount' => $product->price,
-                    'currency' => 'jpy',
+                    'price_data' => [
+                        'currency' => 'jpy',
+                        'product_data' => [
+                            'name' => $product->name,
+                            'description' => $product->information,
+                        ],
+                        'unit_amount' => $product->price,
+                    ],
                     'quantity' => $product->pivot->quantity,
                 ];
                 $lineItems[] = $lineItem;
@@ -85,8 +96,6 @@ class CartController extends Controller
                 'quantity' => $product->pivot->quantity * -1,
             ]);
         }
-
-        dd('test');
 
         Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
         $session = Session::create([
