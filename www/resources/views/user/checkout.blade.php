@@ -13,7 +13,7 @@
                 console.error('Stripe redirectToCheckout error:', result.error.message);
             } else {
                 // ✅ 正常終了（ただし通常はここには来ない）
-                window.location.href = '{{ route('user.cart.index') }}';
+                window.location.href = '{{ route('user.cart.cancel') }}';
             }
         }).catch(function (error) {
             // ✅ Promise 自体が reject された場合（通信エラーなど）
