@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Stock;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ItemController extends Controller
@@ -13,6 +14,16 @@ class ItemController extends Controller
     public function __construct()
     {
         $this->middleware('auth:users');
+        $this->middleware(function (Request $request, $next) {
+            $itemId = $request->route()->parameter('item');
+            if (!is_null($itemId)) {
+                $isExists = Product::availableItems()->where('products.id', $itemId)->exists();
+                if (!$isExists) {
+                    abort(404);
+                }
+            }
+            return $next($request);
+        });
     }
 
     public function index()
