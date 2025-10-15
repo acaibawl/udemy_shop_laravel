@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @property int $id
@@ -30,6 +32,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int|null $stocks_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
  * @property-read int|null $users_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Product availableItems()
  * @method static \Database\Factories\ProductFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Product newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Product newQuery()
@@ -107,5 +110,34 @@ class Product extends Model
     {
         return $this->belongsToMany(User::class, 'carts')
             ->withPivot(['id', 'quantity']);
+    }
+
+    public function scopeAvailableItems(Builder $query): Builder
+    {
+        $stock = DB::table('t_stocks')
+            ->select('product_id', DB::raw('sum(quantity) as quantity'))
+            ->groupBy('product_id')
+            ->having('quantity', '>=', 1);
+
+        return $query->joinSub($stock, 'stock', function ($join) {
+            $join->on('products.id', '=', 'stock.product_id');
+        })
+            ->join('shops', 'products.shop_id', '=', 'shops.id')
+            ->join('secondary_categories', 'products.secondary_category_id', '=', 'secondary_categories.id')
+            ->join('images as image1', 'products.image1', '=', 'image1.id')
+            ->where('shops.is_selling', true)
+            ->where('products.is_selling', true)
+            ->select(
+                'products.id as id',
+                'products.name as name',
+                'products.information',
+                'products.price',
+                'products.sort_order as sort_order',
+                'products.shop_id',
+                'products.secondary_category_id',
+                'image1.filename as filename',
+                'secondary_categories.name as category',
+                'shops.name as shop_name',
+            );
     }
 }
