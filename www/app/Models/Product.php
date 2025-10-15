@@ -37,6 +37,7 @@ use Illuminate\Support\Facades\DB;
  * @method static Builder|Product newModelQuery()
  * @method static Builder|Product newQuery()
  * @method static Builder|Product query()
+ * @method static Builder|Product selectCategory($categoryId)
  * @method static Builder|Product sortOrder(?string $sortOrder)
  * @method static Builder|Product whereCreatedAt($value)
  * @method static Builder|Product whereId($value)
@@ -158,6 +159,16 @@ class Product extends Model
         }
         if ($sortOrder === \Constant::SORT_ORDER['older']) {
             return $query->orderBy('products.created_at', 'asc');
+        }
+        return $query;
+    }
+
+    public function scopeSelectCategory(Builder $query, $categoryId): Builder
+    {
+        if ($categoryId !== '0') {
+            return $query->where('secondary_category_id', $categoryId);
+        } else {
+            return $query;
         }
     }
 }
