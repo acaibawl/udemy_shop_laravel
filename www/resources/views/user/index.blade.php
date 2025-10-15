@@ -100,6 +100,8 @@
                         @endforeach
                     </div>
                     {{ $products->appends([
+                            'category' => \Request::get('category'),
+                            'keyword' => \Request::get('keyword'),
                             'sort' => \Request::get('sort'),
                             'perPage' => \Request::get('perPage')
                         ])->links() }}
