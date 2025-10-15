@@ -32,25 +32,26 @@ use Illuminate\Support\Facades\DB;
  * @property-read int|null $stocks_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
  * @property-read int|null $users_count
- * @method static \Illuminate\Database\Eloquent\Builder|Product availableItems()
+ * @method static Builder|Product availableItems()
  * @method static \Database\Factories\ProductFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|Product newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Product newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Product query()
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereImage1($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereImage2($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereImage3($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereImage4($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereInformation($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereIsSelling($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product wherePrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereSecondaryCategoryId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereShopId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereSortOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereUpdatedAt($value)
+ * @method static Builder|Product newModelQuery()
+ * @method static Builder|Product newQuery()
+ * @method static Builder|Product query()
+ * @method static Builder|Product sortOrder(?string $sortOrder)
+ * @method static Builder|Product whereCreatedAt($value)
+ * @method static Builder|Product whereId($value)
+ * @method static Builder|Product whereImage1($value)
+ * @method static Builder|Product whereImage2($value)
+ * @method static Builder|Product whereImage3($value)
+ * @method static Builder|Product whereImage4($value)
+ * @method static Builder|Product whereInformation($value)
+ * @method static Builder|Product whereIsSelling($value)
+ * @method static Builder|Product whereName($value)
+ * @method static Builder|Product wherePrice($value)
+ * @method static Builder|Product whereSecondaryCategoryId($value)
+ * @method static Builder|Product whereShopId($value)
+ * @method static Builder|Product whereSortOrder($value)
+ * @method static Builder|Product whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Product extends Model
@@ -139,5 +140,24 @@ class Product extends Model
                 'secondary_categories.name as category',
                 'shops.name as shop_name',
             );
+    }
+
+    public function scopeSortOrder(Builder $query, ?string $sortOrder)
+    {
+        if ($sortOrder === null || $sortOrder === \Constant::SORT_ORDER['recommend']) {
+            return $query->orderBy('sort_order', 'asc');
+        }
+        if ($sortOrder === \Constant::SORT_ORDER['higherPrice']) {
+            return $query->orderBy('price', 'desc');
+        }
+        if ($sortOrder === \Constant::SORT_ORDER['lowerPrice']) {
+            return $query->orderBy('price', 'asc');
+        }
+        if ($sortOrder === \Constant::SORT_ORDER['later']) {
+            return $query->orderBy('products.created_at', 'desc');
+        }
+        if ($sortOrder === \Constant::SORT_ORDER['older']) {
+            return $query->orderBy('products.created_at', 'asc');
+        }
     }
 }
