@@ -28,8 +28,6 @@ class ItemController extends Controller
 
     public function index(Request $request)
     {
-        SendThanksMail::dispatch();
-
         $products = Product::availableItems()
             ->selectCategory($request->category ?? '0')
             ->searchKeyword($request->keyword ?? '')

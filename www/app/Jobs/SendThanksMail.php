@@ -3,6 +3,8 @@
 namespace App\Jobs;
 
 use App\Mail\TestMail;
+use App\Mail\ThanksMail;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -17,17 +19,18 @@ class SendThanksMail implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct(
+        public readonly array $products,
+        public readonly User $user,
+    )
+    {}
 
     /**
      * Execute the job.
      */
     public function handle(): void
     {
-        Mail::to('receiver@ex.com')
-            ->send(new TestMail());
+        Mail::to($this->user)
+            ->send(new ThanksMail($this->products, $this->user));
     }
 }
