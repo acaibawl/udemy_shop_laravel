@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Stock;
 use App\Models\User;
+use App\Services\CartService;
 use Auth;
 use Illuminate\Http\Request;
 use Stripe\Checkout\Session;
@@ -55,8 +56,12 @@ class CartController extends Controller
         return redirect()->route('user.cart.index');
     }
 
-    public function checkout()
+    public function checkout(CartService $cartService)
     {
+        // *********
+        $items = Cart::where('user_id', Auth::id())->get();
+        $products = $cartService->getItemsInCart($items);
+        // *********
         $user = User::findOrFail(Auth::id());
         $products = $user->products;
 
