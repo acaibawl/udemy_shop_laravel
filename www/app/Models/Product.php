@@ -37,6 +37,7 @@ use Illuminate\Support\Facades\DB;
  * @method static Builder|Product newModelQuery()
  * @method static Builder|Product newQuery()
  * @method static Builder|Product query()
+ * @method static Builder|Product searchKeyword(?string $keyword)
  * @method static Builder|Product selectCategory($categoryId)
  * @method static Builder|Product sortOrder(?string $sortOrder)
  * @method static Builder|Product whereCreatedAt($value)
